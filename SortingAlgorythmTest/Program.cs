@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -231,6 +232,7 @@ namespace AlgorythmSortTest
         {
             Console.Clear();
             Console.WriteLine("[ОШИБКА ВВОДА]");
+            Console.WriteLine("Для продолжения нажмите ENTER.");
             Console.ReadLine();
         }
 
@@ -319,9 +321,9 @@ namespace AlgorythmSortTest
             Test_table_header();
             int N = settings.Nmin;
 
-            File_cleaner("Comb_Swaps.txt");
-            File_cleaner("Comb_Comps.txt");
-            File_cleaner("Comb_Times.txt");
+            File_cleaner("Merge_Swaps.txt");
+            File_cleaner("Merge_Comps.txt");
+            File_cleaner("Merge_Times.txt");
 
             while (N <= settings.Nmax)
             {
@@ -420,7 +422,7 @@ namespace AlgorythmSortTest
         static void Auto_test(Settings settings)
         {
             Console.Clear();
-            Console.WriteLine("========АВТОМАТИЧЕСКИЙ ТЕСТ АЛГОРИТМОВ СОРТИРОВКИ========");
+            Console.WriteLine("===========АВТОМАТИЧЕСКИЙ ТЕСТ АЛГОРИТМОВ СОРТИРОВКИ===========");
             Auto_test_table_header();
 
             for (int i = 1; i <= 3; i++)
@@ -651,8 +653,73 @@ namespace AlgorythmSortTest
                 Input_error_message();
                 return;
             }
+        }
+
+        static void Auto_file_gen()
+        {
+            Console.Clear();
+            Console.WriteLine("==ГЕНЕРИРОВАНИЕ ИСХОДНЫХ ДАННЫХ:АВТОМАТИЧЕСКОЕ ТЕСТИРОВАНИЕ");
+            Console.Write("Создать файлы для автоматического тестирования? [y/n]: ");
+            string qst = Console.ReadLine();
+            switch (qst)
+            {
+                case "y":
+                case "Y":
+                    {
+                        Console.Clear();
+                        Console.WriteLine("==ГЕНЕРИРОВАНИЕ ИСХОДНЫХ ДАННЫХ:АВТОМАТИЧЕСКОЕ ТЕСТИРОВАНИЕ==");
+                        Console.WriteLine("Генерация для Худшего случая:");
+                        Console.Write("[СОЗАНИЕ ФАЙЛА]->");
+                        BinaryWriter fout = new BinaryWriter(File.Open("Worst_Input_Data.bin", FileMode.OpenOrCreate));
+                        for (int i = 1000000; i >= 0; i--)
+                        {
+                            fout.Write(i);
+                        }
+                        fout.Close();
+                        Console.Write("[ФАЙЛ СОЗДАН].\n\n");
+
+                        Console.WriteLine("Генерация для Лучшего случая:");
+                        Console.Write("[СОЗАНИЕ ФАЙЛА]->");
+                        fout = new BinaryWriter(File.Open("Best_Input_Data.bin", FileMode.OpenOrCreate));
+                        for (int i = 0; i <= 1000000; i++)
+                        {
+                            fout.Write(i);
+                        }
+                        fout.Close();
+                        Console.Write("[ФАЙЛ СОЗДАН].\n\n");
+
+                        Console.WriteLine("Генерация для Среднего случая:");
+                        Random rand = new Random();
+                        Console.Write("[СОЗАНИЕ ФАЙЛА]->");
+                        fout = new BinaryWriter(File.Open("Average_Input_Data.bin", FileMode.OpenOrCreate));
+                        for (int i = 0; i <= 1000000; i++)
+                        {
+                            fout.Write(rand.Next(0, 1000000));
+                        }
+                        fout.Close();
+                        Console.Write("[ФАЙЛ СОЗДАН].\n\n");
+
+                        Console.WriteLine("Генерирование файлов завершено.\n Нажмите ENTER для продолжения.");
+                        Console.ReadLine();
+
+                        break;
+                    }
+                case "n":
+                case "N":
+                    {
+                        return;
+                    }
+                default:
+                    {
+                        Input_error_message();
+                        return;
+                    }
+
+            }
+
 
         }
+
 
         static void File_gen_menu()
         {
@@ -661,6 +728,7 @@ namespace AlgorythmSortTest
             Console.Write("1: Для Лучшего случая. (min-max)\n" +
                           "2: Для Среднего случая.(random)\n" +
                           "3: Для Худшего случая. (max-min)\n" +
+                          "4: Для Автоматического тестирования.\n" +
                           "Ввод: ");
             string menu_qst = Console.ReadLine();
             switch (menu_qst)
@@ -678,6 +746,11 @@ namespace AlgorythmSortTest
                 case "3":
                     {
                         Worst_file_gen();
+                        break;
+                    }
+                case "4":
+                    {
+                        Auto_file_gen();
                         break;
                     }
                 default:
